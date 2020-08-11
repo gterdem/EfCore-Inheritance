@@ -25,7 +25,7 @@ namespace EfInheritance.Test
         [Fact]
         public async Task Vehicles_Should_Have_Drivers()
         {
-            if (!(await IsSeeded()))
+            if (!await IsSeeded())
             {
                 await SeedVehicleData();
             }
@@ -37,7 +37,7 @@ namespace EfInheritance.Test
 
                 // Problem with include -> returns repeating duplicate data
                 var vehiclesWithDrivers = await _context.Vehicles.AsNoTracking().Include("Drivers").ToListAsync();
-                vehiclesWithDrivers.Count.ShouldBe(4);
+                vehiclesWithDrivers.Count.ShouldBe(4); //but was 12 -> 9 yacts, 1 automobile, 1 plane, 1 drone
 
                 var automobile = vehiclesWithDrivers.First(q => q.Id == TestData.automobileId);
                 (automobile as Automobile).Drivers.Count.ShouldBe(3);
