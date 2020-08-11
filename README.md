@@ -215,7 +215,7 @@ public class Driver
 
 **Issue:**
 
-Including sub collection causes n^2 repeated record return.
+Including sub collection causes n^2 added collection item repeated record return. 
 
 ```csharp
 var vehiclesWithDrivers = await _context.Vehicles.AsNoTracking().Include("Drivers").ToListAsync();
