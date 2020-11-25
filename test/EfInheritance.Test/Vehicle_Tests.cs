@@ -37,10 +37,16 @@ namespace EfInheritance.Test
 
                 // Problem with include -> returns repeating duplicate data
                 var vehiclesWithDrivers = await _context.Vehicles.AsNoTracking().Include("Drivers").ToListAsync();
-                vehiclesWithDrivers.Count.ShouldBe(4); //but was 12 -> 9 yacts, 1 automobile, 1 plane, 1 drone
 
                 var automobile = vehiclesWithDrivers.First(q => q.Id == TestData.automobileId);
-                (automobile as Automobile).Drivers.Count.ShouldBe(3);
+                automobile.Name.ShouldBe(TestData.automobileName);
+                (automobile as Automobile)?.Drivers.Count.ShouldBe(2);
+
+                var plane = vehiclesWithDrivers.First(q => q.Id == TestData.planeId);
+                plane.Name.ShouldBe(TestData.planeName);
+                (plane as Plane)?.Drivers.Count.ShouldBe(4);
+
+                vehiclesWithDrivers.Count.ShouldBe(4); //but was 15 -> 9 yacts, 1 automobile, 4 plane, 1 drone
             }
         }
 
@@ -50,26 +56,24 @@ namespace EfInheritance.Test
             {
                 await _context.Drones.AddAsync(new Drone(Guid.NewGuid(), "DroneX12"));
 
-                var superCar = new Automobile(TestData.automobileId, "SuperCar");
+                var superCar = new Automobile(TestData.automobileId, TestData.automobileName);
                 superCar.AddDriver(Guid.NewGuid(), "1st Capt.", true)
                     .AddDriver(Guid.NewGuid(), "2nd Capt.", false);
-
                 await _context.Automobiles.AddAsync(superCar);
 
-                var planeX = new Plane(TestData.planeId, "PlaneXtr15");
+                var planeX = new Plane(TestData.planeId, TestData.planeName);
                 planeX.AddDriver(Guid.NewGuid(), "1st Capt.", true)
                     .AddDriver(Guid.NewGuid(), "2nd Capt.", false)
                     .AddDriver(Guid.NewGuid(), "3rd Capt.", false)
                     .AddDriver(Guid.NewGuid(), "4th Capt.", false);
-
-                await _context.Planes.AddAsync(new Plane(TestData.planeId, "SuperPlane"));
+                await _context.Planes.AddAsync(planeX);
 
                 var yactFx = new Yact(TestData.yactId, "YactFx");
                 yactFx.AddDriver(Guid.NewGuid(), "1st Capt.", true)
                     .AddDriver(Guid.NewGuid(), "2nd Capt.", false)
                     .AddDriver(Guid.NewGuid(), "3rd Capt.", false);
-
                 await _context.Yacts.AddAsync(yactFx);
+
                 await _context.SaveChangesAsync();
             }
         }
