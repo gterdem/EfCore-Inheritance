@@ -1,5 +1,5 @@
 # EfCore-Inheritance
-EfCore Inheritance test project
+Related issue for this repository: https://github.com/dotnet/efcore/issues/22016
 
 ### Db Creation-Migration
 
